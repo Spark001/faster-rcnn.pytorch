@@ -65,6 +65,7 @@ class roibatchLoader(data.Dataset):
     # sample in this group
     minibatch_db = [self._roidb[index_ratio]]
     blobs = get_minibatch(minibatch_db, self._num_classes)
+    # print(blobs['img_path'])
     data = torch.from_numpy(blobs['data'])
     im_info = torch.from_numpy(blobs['im_info'])
     # we need to random shuffle the bounding box.
@@ -201,6 +202,9 @@ class roibatchLoader(data.Dataset):
             # permute trim_data to adapt to downstream processing
         padding_data = padding_data.permute(2, 0, 1).contiguous()
         im_info = im_info.view(3)
+
+        # print ('&'*80)
+        # print(padding_data.size(), torch.max(padding_data), torch.min(padding_data))
 
         return padding_data, im_info, gt_boxes_padding, num_boxes
     else:

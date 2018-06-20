@@ -45,10 +45,17 @@ class _fasterRCNN(nn.Module):
 
         # feed image data to base model to obtain base feature map
         base_feat = self.RCNN_base(im_data)
-
+        # print(im_info);print('-'*40)
+        # print(gt_boxes);print('-'*40)
+        # print(num_boxes);print('-'*40)
         # feed base feature map tp RPN to obtain rois
         rois, rpn_loss_cls, rpn_loss_bbox = self.RCNN_rpn(base_feat, im_info, gt_boxes, num_boxes)
-
+        # print(rois);
+        # print('-' * 40)
+        # print(rpn_loss_cls);
+        # print('-' * 40)
+        # print(rpn_loss_bbox);
+        # print('-' * 40)
         # if it is training phrase, then use ground trubut bboxes for refining
         if self.training:
             roi_data = self.RCNN_proposal_target(rois, gt_boxes, num_boxes)
@@ -95,7 +102,7 @@ class _fasterRCNN(nn.Module):
 
         # compute object classification probability
         cls_score = self.RCNN_cls_score(pooled_feat)
-        cls_prob = F.softmax(cls_score)
+        cls_prob = F.softmax(cls_score, dim=1)
 
         RCNN_loss_cls = 0
         RCNN_loss_bbox = 0

@@ -1,0 +1,69 @@
+1-1
+VOC07 metric? Yes
+AP for aeroplane = 0.2420
+AP for bicycle = 0.2949
+AP for bird = 0.2186
+AP for boat = 0.1152
+AP for bottle = 0.1509
+AP for bus = 0.2441
+AP for car = 0.4409
+AP for cat = 0.3847
+AP for chair = 0.1552
+AP for cow = 0.1987
+AP for diningtable = 0.1313
+AP for dog = 0.2822
+AP for horse = 0.2962
+AP for motorbike = 0.3231
+AP for person = 0.4903
+AP for pottedplant = 0.1237
+AP for sheep = 0.2151
+AP for sofa = 0.2797
+AP for train = 0.3185
+AP for tvmonitor = 0.2453
+Mean AP = 0.2575
+
+1-10
+AP for aeroplane = 0.6471
+AP for bicycle = 0.7052
+AP for bird = 0.5788
+AP for boat = 0.4537
+AP for bottle = 0.4202
+AP for bus = 0.6679
+AP for car = 0.7820
+AP for cat = 0.7637
+AP for chair = 0.4007
+AP for cow = 0.6790
+AP for diningtable = 0.5196
+AP for dog = 0.7285
+AP for horse = 0.7272
+AP for motorbike = 0.6541
+AP for person = 0.6952
+AP for pottedplant = 0.3042
+AP for sheep = 0.5673
+AP for sofa = 0.5024
+AP for train = 0.6794
+AP for tvmonitor = 0.6701
+Mean AP = 0.6073
+
+1-20
+AP for aeroplane = 0.6550
+AP for bicycle = 0.7423
+AP for bird = 0.6576
+AP for boat = 0.4736
+AP for bottle = 0.4516
+AP for bus = 0.7309
+AP for car = 0.8088
+AP for cat = 0.8166
+AP for chair = 0.4234
+AP for cow = 0.7252
+AP for diningtable = 0.5673
+AP for dog = 0.7755
+AP for horse = 0.7977
+AP for motorbike = 0.7189
+AP for person = 0.7395
+AP for pottedplant = 0.3536
+AP for sheep = 0.6672
+AP for sofa = 0.5723
+AP for train = 0.7391
+AP for tvmonitor = 0.6904
+Mean AP = 0.6553

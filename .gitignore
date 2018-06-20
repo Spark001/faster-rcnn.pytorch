@@ -1,3 +1,8 @@
 data/*
 *.pyc
 *~
+
+*.o
+*.so
+.idea/*
+output/*

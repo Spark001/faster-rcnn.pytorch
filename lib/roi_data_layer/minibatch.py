@@ -50,6 +50,7 @@ def get_minibatch(roidb, num_classes):
     dtype=np.float32)
 
   blobs['img_id'] = roidb[0]['img_id']
+  blobs['img_path'] = roidb[0]['image']
 
   return blobs
 
