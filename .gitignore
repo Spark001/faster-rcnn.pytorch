@@ -6,3 +6,4 @@ data/*
 *.so
 .idea/*
 output/*
+*.pkl

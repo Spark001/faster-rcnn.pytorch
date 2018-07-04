@@ -36,6 +36,7 @@ except NameError:
 
 # <<<< obsolete
 
+import pdb
 
 class pascal_voc(imdb):
     def __init__(self, image_set, year, devkit_path=None):
@@ -55,8 +56,8 @@ class pascal_voc(imdb):
         self._image_ext = '.jpg'
         self._image_index = self._load_image_set_index()
         # Default to roidb handler
-        # self._roidb_handler = self.selective_search_roidb
-        self._roidb_handler = self.gt_roidb
+        self._roidb_handler = self.selective_search_roidb
+        # self._roidb_handler = self.gt_roidb
         self._salt = str(uuid.uuid4())
         self._comp_id = 'comp4'
 
@@ -207,7 +208,8 @@ class pascal_voc(imdb):
         Load image and bounding boxes info from XML file in the PASCAL VOC
         format.
         """
-        filename = os.path.join(self._data_path, 'Annotations', index + '.xml')
+        # filename = os.path.join(self._data_path, 'Annotations', index + '.xml')
+        filename = os.path.join(self._data_path, 'CAMSSAnnotation', index + '.xml')
         tree = ET.parse(filename)
         objs = tree.findall('object')
         # if not self.config['use_diff']:
@@ -231,10 +233,13 @@ class pascal_voc(imdb):
         for ix, obj in enumerate(objs):
             bbox = obj.find('bndbox')
             # Make pixel indexes 0-based
-            x1 = float(bbox.find('xmin').text) - 1
-            y1 = float(bbox.find('ymin').text) - 1
-            x2 = float(bbox.find('xmax').text) - 1
-            y2 = float(bbox.find('ymax').text) - 1
+            x1 = float(bbox.find('xmin').text)
+            y1 = float(bbox.find('ymin').text)
+            x2 = float(bbox.find('xmax').text)
+            y2 = float(bbox.find('ymax').text)
+
+            if x1<0 or y1<0 or x2<0 or y2 <0:
+                assert False, (x1,y1,x2,y2)
 
             diffc = obj.find('difficult')
             difficult = 0 if diffc == None else int(diffc.text)

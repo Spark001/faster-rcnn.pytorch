@@ -5,17 +5,21 @@
 # Created Time: 2018年05月16日 星期三 15时00分43秒
 #########################################################################
 #!/bin/bash
-GPU_ID=0
-BATCH_SIZE=1
+GPU_ID=1
+BATCH_SIZE=4
 WORKER_NUMBER=6
-LEARNING_RATE=1e-4
-DECAY_STEP=5
+LEARNING_RATE=4e-3
+DECAY_STEP=8
+SESSION=4
 
 CUDA_VISIBLE_DEVICES=$GPU_ID
 python trainval_net.py \
-       --dataset fashion_ai --net vgg16 \
+       --dataset pascal_voc --net vgg16 \
        --bs $BATCH_SIZE --nw $WORKER_NUMBER \
        --lr $LEARNING_RATE --lr_decay_step $DECAY_STEP \
-       --epochs 8 \
-	   --disp_interval 1 \
-       --cuda
+       --epochs 9 \
+	   --disp_interval 100 \
+       --cuda \
+       --s $SESSION \
+       --gpu $GPU_ID \
+       --descrip CAMSS

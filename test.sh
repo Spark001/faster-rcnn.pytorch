@@ -5,9 +5,9 @@
 # Created Time: 2018年05月17日 星期四 12时54分14秒
 #########################################################################
 #!/bin/bash
-SESSION=1
-EPOCH=6
-CHECKPOINT=10021
+SESSION=4
+EPOCH=9
+CHECKPOINT=2504
 
 python test_net.py \
 	   --dataset pascal_voc --net vgg16 \

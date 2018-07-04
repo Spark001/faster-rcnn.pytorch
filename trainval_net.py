@@ -78,6 +78,9 @@ def parse_args():
   parser.add_argument('--cag', dest='class_agnostic',
                       help='whether perform class_agnostic bbox regression',
                       action='store_true')
+  parser.add_argument('--gpu', dest='gpuid',
+                      help='which gpu to use',
+                      default=0, type=int)
   # parser.add_argument('--gpus', dest='gpus',
   #                     help='which gpus to use',
   #                     default='', type=str)
@@ -118,7 +121,10 @@ def parse_args():
   parser.add_argument('--use_tfboard', dest='use_tfboard',
                       help='whether use tensorflow tensorboard',
                       default=False, type=bool)
-
+# add some description
+  parser.add_argument('--descrip', dest='descrip',
+					  help='model savename\'s description',
+					  default='none',type=str)
   args = parser.parse_args()
   return args
 
@@ -155,6 +161,9 @@ if __name__ == '__main__':
 
   print('Called with args:')
   print(args)
+
+  cfg.GPU_ID = args.gpuid
+  torch.cuda.set_device(cfg.GPU_ID)
 
   if args.use_tfboard:
     from model.utils.logger import Logger
@@ -316,17 +325,23 @@ if __name__ == '__main__':
 
   iters_per_epoch = int(train_size / args.batch_size)
 
+  LossInfo = {'loss': [],
+            'loss_rpn_cls': [],
+            'loss_rpn_box': [],
+            'loss_rcnn_cls': [],
+            'loss_rcnn_box': []}
   for epoch in range(args.start_epoch, args.max_epochs + 1):
     # setting to train mode
     fasterRCNN.train()
     loss_temp = 0
-    start = time.time()
+    epoch_start = time.time()
 
     if epoch % (args.lr_decay_step + 1) == 0:
         adjust_learning_rate(optimizer, args.lr_decay_gamma)
         lr *= args.lr_decay_gamma
 
     data_iter = iter(dataloader)
+    start = time.time()
     for step in range(iters_per_epoch):
       data = next(data_iter)
       im_data.data.resize_(data[0].size()).copy_(data[0])
@@ -376,11 +391,16 @@ if __name__ == '__main__':
         print("[session %d][epoch %2d][iter %4d/%4d] loss: %.4f, lr: %.2e" \
                                 % (args.session, epoch, step, iters_per_epoch, loss_temp, lr))
         print("\t\t\tfg/bg=(%d/%d), time cost: %f" % (fg_cnt, bg_cnt, end-start))
-        print("\t\t\trpn_cls: %.4f, rpn_box: %.4f, rcnn_cls: %.4f, rcnn_box %.4f" \
+        print("\t\t\trpn_cls: %.4f, rpn_box: %.4f, rcnn_cls: %.4f, rcnn_box: %.4f" \
                       % (loss_rpn_cls, loss_rpn_box, loss_rcnn_cls, loss_rcnn_box))
-        if math.isnan(loss_temp):
-            print('|' * 100)
-            exit()
+
+        # store the loss
+        LossInfo['loss'].append(loss_temp)
+        LossInfo['loss_rpn_cls'].append(loss_rpn_cls)
+        LossInfo['loss_rpn_box'].append(loss_rpn_box)
+        LossInfo['loss_rcnn_cls'].append(loss_rcnn_cls)
+        LossInfo['loss_rcnn_box'].append(loss_rcnn_box)
+
         if args.use_tfboard:
           info = {
             'loss': loss_temp,
@@ -395,8 +415,8 @@ if __name__ == '__main__':
         loss_temp = 0
         start = time.time()
 
+    save_name = os.path.join(output_dir, '{}_{}_{}_{}_{}.pth'.format(args.descrip,args.net,args.session, epoch, step))
     if args.mGPUs:
-      save_name = os.path.join(output_dir, 'faster_rcnn_{}_{}_{}.pth'.format(args.session, epoch, step))
       save_checkpoint({
         'session': args.session,
         'epoch': epoch + 1,
@@ -406,7 +426,6 @@ if __name__ == '__main__':
         'class_agnostic': args.class_agnostic,
       }, save_name)
     else:
-      save_name = os.path.join(output_dir, 'faster_rcnn_{}_{}_{}.pth'.format(args.session, epoch, step))
       save_checkpoint({
         'session': args.session,
         'epoch': epoch + 1,
@@ -417,5 +436,5 @@ if __name__ == '__main__':
       }, save_name)
     print('save model: {}'.format(save_name))
 
-    end = time.time()
-    print(end - start)
+    epoch_end = time.time()
+    print(epoch_end - epoch_start)
